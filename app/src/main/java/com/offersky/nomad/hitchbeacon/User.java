@@ -16,6 +16,7 @@ public class User {
     public List<String> discoveredNotes;
     public String bloodGroup;
     public String fcm;
+    public String date;
 
 
     public User() {
@@ -31,7 +32,6 @@ public class User {
         this.discoveredNotes = ntl;
         this.bloodGroup = "Default";
         this.fcm = "asdf";
-
     }
 
 

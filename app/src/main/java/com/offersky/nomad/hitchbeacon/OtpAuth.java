@@ -26,6 +26,11 @@ import com.msg91.sendotp.library.SendOtpVerification;
 import com.msg91.sendotp.library.Verification;
 import com.msg91.sendotp.library.VerificationListener;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
+import org.joda.time.format.ISODateTimeFormat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -161,6 +166,9 @@ public class OtpAuth extends AppCompatActivity implements VerificationListener{
         dummylistnotes.add("sdx");
         user = new User(mobile,age,mf,name,dummylistoffers,dummylistnotes);
         this.user.bloodGroup = userBloodGroup;
+        DateTime now = new DateTime();
+        DateTimeFormatter date_format = new DateTimeFormatterBuilder().append(ISODateTimeFormat.dateTimeNoMillis()).toFormatter().withOffsetParsed();
+        this.user.date = date_format.print(now);
        /* StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL,
                 new Response.Listener<String>() {
                     @Override
@@ -331,6 +339,7 @@ public class OtpAuth extends AppCompatActivity implements VerificationListener{
 
     private void storeUserDataAndSignUp()
     {
+        Log.d(TAG, "in store user and sign up");
         Hitchbeacon.user = user;
         Hitchbeacon.setListners();
         mDatabase.child("users").child(user.email).setValue(user);
