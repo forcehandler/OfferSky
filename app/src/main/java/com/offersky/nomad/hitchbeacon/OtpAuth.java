@@ -30,6 +30,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
+import org.joda.time.format.ISODateTimeFormat;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -93,6 +97,7 @@ public class OtpAuth extends AppCompatActivity {
             public void onClick(View v) {
                 Log.d(TAG, "moving to register user()");
                 registerUser();
+                Toast.makeText(OtpAuth.this, "Please wait for the OTP", Toast.LENGTH_LONG).show();
                 Log.d(TAG, "moving to fetch otp from server");
                 fetchMasterOtpFromFirebase();
             }
@@ -165,6 +170,10 @@ public class OtpAuth extends AppCompatActivity {
         dummylistnotes.add("sdx");
         user = new User(mobile,age,mf,name,dummylistoffers,dummylistnotes);
         this.user.bloodGroup = userBloodGroup;
+        //Handles date of signup
+        DateTime now = new DateTime();
+        DateTimeFormatter date_format = new DateTimeFormatterBuilder().append(ISODateTimeFormat.dateTimeNoMillis()).toFormatter().withOffsetParsed();
+        this.user.date = date_format.print(now);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL,
                 new Response.Listener<String>() {
                     @Override
@@ -172,13 +181,13 @@ public class OtpAuth extends AppCompatActivity {
                         Log.i("otpauth", response);
                         Log.d(TAG, "response from server on otp send " + response);
 
-                        Toast.makeText(OtpAuth.this, "Please wait for the OTP", Toast.LENGTH_LONG).show();
+
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(OtpAuth.this, error.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(OtpAuth.this, "Please try again", Toast.LENGTH_LONG).show();
                     }
                 }) {
             @Override

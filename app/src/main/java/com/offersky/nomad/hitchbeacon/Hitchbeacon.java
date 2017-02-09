@@ -172,7 +172,7 @@ public class Hitchbeacon extends Application {
     public static void getUser(){
         Log.d(TAG, "ingetUser");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String email = sharedPreferences.getString("email","00");
+        String email = sharedPreferences.getString("email","rabada");
         Query queryRefUser = mDatabase.child("users").orderByChild("email").equalTo(email);
         queryRefUser.addChildEventListener(new ChildEventListener() {
             @Override

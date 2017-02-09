@@ -8,8 +8,8 @@ android {
         applicationId "com.offersky.nomad.hitchbeacon"
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 6
-        versionName "1.4.1"
+        versionCode 7
+        versionName "1.4.2"
     }
     buildTypes {
         release {
@@ -35,8 +35,6 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:9.4.0'
     compile 'com.mcxiaoke.volley:library-aar:1.0.0'
     compile 'com.github.paolorotolo:appintro:4.1.0'
-    compile 'com.msg91.sendotp.library:library:2.9'
-
     compile 'joda-time:joda-time:2.9.4'
 }
 apply plugin: 'com.google.gms.google-services'
