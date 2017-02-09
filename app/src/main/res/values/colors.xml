@@ -28,4 +28,12 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
 
+
+        <color name="button_pressed">#1c76bb</color>
+        <color name="button_focused">#ff8a00</color>
+        <color name="button_default">#00B0D7</color>
+
+
+
+
 </resources>

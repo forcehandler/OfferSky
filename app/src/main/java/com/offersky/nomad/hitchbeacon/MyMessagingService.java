@@ -19,18 +19,20 @@ public class MyMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Log.d(TAG, "From: " + remoteMessage.getFrom());
         Log.d(TAG,remoteMessage.getData().toString());
-        if(remoteMessage.getData().get("type").equals("notification"))
-        {
-            Intent notificationIntent = new Intent(this, IconTabsActivity.class);
-            notificationIntent.setAction("main");
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                    | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-                    notificationIntent, 0);
+        if(remoteMessage.getData().get("type") != null) {
+            Log.d(TAG, remoteMessage.getData().toString() + " getdatastring");
+            Log.d(TAG, remoteMessage.getData().get("type").toString()+ " getdata.gettype.string");
+            if (remoteMessage.getData().get("type").equals("notification")) {
+                Intent notificationIntent = new Intent(this, IconTabsActivity.class);
+                notificationIntent.setAction("main");
+                notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                        notificationIntent, 0);
 
-            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
-            mBuilder.setContentTitle(remoteMessage.getData().get("title")).setContentText(remoteMessage.getData().get("body"));
-            mBuilder.setContentIntent(pendingIntent);
+                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
+                mBuilder.setContentTitle(remoteMessage.getData().get("title")).setContentText(remoteMessage.getData().get("body"));
+                mBuilder.setContentIntent(pendingIntent);
 
 //            if(!isMyServiceRunning(DeadlineTrackerService.class)){
 //                final Handler handler = new Handler();
@@ -54,6 +56,7 @@ public class MyMessagingService extends FirebaseMessagingService {
 //                Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notificationSound);
 //                r.play();
 //            }
+            }
         }
     }
 

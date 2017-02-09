@@ -38,9 +38,12 @@ public class Hitchbeacon extends Application {
     private FirebaseAuth auth;
     private static Hitchbeacon mInstance;
 
+    private static final String TAG = Hitchbeacon.class.getSimpleName();
+
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d(TAG, "onCreate");
         context = getApplicationContext();
         auth = FirebaseAuth.getInstance();
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
@@ -58,6 +61,7 @@ public class Hitchbeacon extends Application {
         }
         if(loggedin){
             if(user==null)
+                Log.d(TAG, "loggedin = false");
                 getUser();
 //            setListners();
 //            context.startActivity(new Intent(this,IconTabsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
@@ -166,14 +170,18 @@ public class Hitchbeacon extends Application {
     }
 
     public static void getUser(){
+        Log.d(TAG, "ingetUser");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String email = sharedPreferences.getString("email",null);
+        String email = sharedPreferences.getString("email","00");
         Query queryRefUser = mDatabase.child("users").orderByChild("email").equalTo(email);
         queryRefUser.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "in onChildAdded of getUser");
+
                 User userInstance = dataSnapshot.getValue(User.class);
                 user = userInstance;
+
                 setListners();
                 LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("user"));
 
@@ -203,6 +211,9 @@ public class Hitchbeacon extends Application {
     }
 
     public static String getSegment(User user){
+        Log.d(TAG, "in getSegment");
+        Log.d(TAG, " user.age" + user.age);
+        Log.d(TAG, " user.age" + user.sex);
         String ageString = user.age;
         String sex = user.sex;
         String segment = "A";
@@ -219,7 +230,6 @@ public class Hitchbeacon extends Application {
         return segment;
     }
 
-    public static final String TAG = Hitchbeacon.class.getSimpleName();
 
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;

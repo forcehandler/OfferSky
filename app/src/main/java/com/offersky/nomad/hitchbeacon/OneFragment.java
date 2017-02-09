@@ -92,8 +92,8 @@ public class OneFragment extends Fragment {
             adapter = new DealsAdapter(getActivity(), deals);
             recyclerView.setAdapter(adapter);
 
-            if (deals.isEmpty())
-                Snackbar.make(recyclerView, "No deals added.", Snackbar.LENGTH_LONG).show();
+           // if (deals.isEmpty());
+                //Snackbar.make(recyclerView, "No deals added.", Snackbar.LENGTH_LONG).show();
 
         }
 

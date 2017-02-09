@@ -4,17 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -101,13 +94,13 @@ public class TwoFragment extends Fragment {
 
             LocalBroadcastManager.getInstance(getContext()).registerReceiver(mMessageReceiver,
                     new IntentFilter("offers"));
-            if (offers.isEmpty())
-                Snackbar.make(recyclerView, "No offers added.", Snackbar.LENGTH_LONG).show();
+            //if (offers.isEmpty());
+                //bar.make(recyclerView, "No offers added.", Snackbar.LENGTH_LONG).show();
 
         }
 
         // tinting FAB icon
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+        /*if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
 
             Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_add_24dp);
             drawable = DrawableCompat.wrap(drawable);
@@ -115,7 +108,7 @@ public class TwoFragment extends Fragment {
             DrawableCompat.setTintMode(drawable, PorterDuff.Mode.SRC_IN);
 
             fab.setImageDrawable(drawable);
-        }
+        }*/
 
         /*ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);*/

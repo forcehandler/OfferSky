@@ -9,7 +9,6 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import static com.offersky.nomad.hitchbeacon.Hitchbeacon.context;
-import static com.offersky.nomad.hitchbeacon.Hitchbeacon.getUser;
 
 public class splash extends Activity {
 
@@ -17,7 +16,9 @@ public class splash extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Intent intent = new Intent(this, IconTabsActivity.class);
-        getUser();
+        Log.d("splash", "calling get user form splash");
+        //TODO: EMergency debugging in place
+        //getUser();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         Boolean loggedin = sharedPreferences.getBoolean(Constants.SIGNEDIN,false);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

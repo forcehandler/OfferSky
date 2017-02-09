@@ -17,27 +17,31 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.msg91.sendotp.library.SendOtpVerification;
-import com.msg91.sendotp.library.Verification;
-import com.msg91.sendotp.library.VerificationListener;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.DateTimeFormatterBuilder;
-import org.joda.time.format.ISODateTimeFormat;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.offersky.nomad.hitchbeacon.Hitchbeacon.context;
 import static com.offersky.nomad.hitchbeacon.Hitchbeacon.setLoggedin;
 
-public class OtpAuth extends AppCompatActivity implements VerificationListener{
+public class OtpAuth extends AppCompatActivity {
 
     User user;
     private static String TAG = OtpAuth.class.getSimpleName();
@@ -52,9 +56,6 @@ public class OtpAuth extends AppCompatActivity implements VerificationListener{
     //master otp for overriding the otp
     private int master_otp = 0;
 
-    //Otp verification listener
-    Verification mVerification;
-
     //for displaying error messages
     private TextInputLayout inputLayoutName, inputLayoutAge, inputLayoutPhone;
 
@@ -62,8 +63,6 @@ public class OtpAuth extends AppCompatActivity implements VerificationListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_new);
-
-
         inputLayoutName = (TextInputLayout) findViewById(R.id.inputLayoutName);
         inputLayoutPhone = (TextInputLayout) findViewById(R.id.inputLayoutPhone);
         inputLayoutAge = (TextInputLayout) findViewById(R.id.inputLayoutAge);
@@ -166,10 +165,7 @@ public class OtpAuth extends AppCompatActivity implements VerificationListener{
         dummylistnotes.add("sdx");
         user = new User(mobile,age,mf,name,dummylistoffers,dummylistnotes);
         this.user.bloodGroup = userBloodGroup;
-        DateTime now = new DateTime();
-        DateTimeFormatter date_format = new DateTimeFormatterBuilder().append(ISODateTimeFormat.dateTimeNoMillis()).toFormatter().withOffsetParsed();
-        this.user.date = date_format.print(now);
-       /* StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -197,18 +193,13 @@ public class OtpAuth extends AppCompatActivity implements VerificationListener{
         };
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);*/
-
-        // TODO: Store user data on server after otp verification
-
-        mVerification = SendOtpVerification.createSmsVerification(this, mobile, this, "91", true);
-        mVerification.initiate();
+        requestQueue.add(stringRequest);
     }
 
     private void verifyOtp() {
 
-        /*StringRequest jsonObjReq = new StringRequest(Request.Method.POST,
-                 urlVerifyOtp,new Response.Listener<String>() {
+        StringRequest jsonObjReq = new StringRequest(Request.Method.POST,
+                urlVerifyOtp,new Response.Listener<String>() {
 
             @Override
             public void onResponse(String responseString) {
@@ -224,7 +215,7 @@ public class OtpAuth extends AppCompatActivity implements VerificationListener{
                 }
                 if (response != null) {
                     try {
-                            Boolean successB = response.getBoolean("success");
+                        Boolean successB = response.getBoolean("success");
                         if (successB==true) {
                             Hitchbeacon.user = user;
                             Hitchbeacon.setListners();
@@ -267,10 +258,7 @@ public class OtpAuth extends AppCompatActivity implements VerificationListener{
 
         // Adding request to request queue
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(jsonObjReq);*/
-
-        // MSG91 SDK implementation of otp
-
+        requestQueue.add(jsonObjReq);
     }
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -300,7 +288,7 @@ public class OtpAuth extends AppCompatActivity implements VerificationListener{
         try
         {
             master_otp = Integer.parseInt(otp);
-            Log.d(TAG, "master in setMasterOtp " + master_otp);
+            Log.d(TAG, "master in in setMasterOtp " + master_otp);
         }
         catch (Exception e)
         {
@@ -327,30 +315,24 @@ public class OtpAuth extends AppCompatActivity implements VerificationListener{
         {
             Log.d(TAG,"otp matches master otp");
             //Store the details locally and on firebase and send the user to icon tab activity
-            storeUserDataAndSignUp();
+            Hitchbeacon.user = user;
+            Hitchbeacon.setListners();
+            mDatabase.child("users").child(user.email).setValue(user);
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            sharedPreferences.edit().putBoolean(Constants.SIGNEDIN,true).apply();
+            sharedPreferences.edit().putString("email",user.email).apply();
+            setLoggedin();
+            Hitchbeacon.loggedin=true;
+            Hitchbeacon.setLoggedin();
+            startActivity(new Intent(OtpAuth.this, IconTabsActivity.class));
+            finish();
         }
         else
         {
             Log.d(TAG, "otp did not match master otp");
             //verify the entered otp
-            mVerification.verify(editTextOtp.getText().toString());
+            verifyOtp();
         }
-    }
-
-    private void storeUserDataAndSignUp()
-    {
-        Log.d(TAG, "in store user and sign up");
-        Hitchbeacon.user = user;
-        Hitchbeacon.setListners();
-        mDatabase.child("users").child(user.email).setValue(user);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        sharedPreferences.edit().putBoolean(Constants.SIGNEDIN,true).apply();
-        sharedPreferences.edit().putString("email",user.email).apply();
-        setLoggedin();
-        Hitchbeacon.loggedin=true;
-        Hitchbeacon.setLoggedin();
-        startActivity(new Intent(OtpAuth.this, IconTabsActivity.class));
-        finish();
     }
 
     private void fetchMasterOtpFromFirebase()
@@ -377,26 +359,5 @@ public class OtpAuth extends AppCompatActivity implements VerificationListener{
             }
 
         });
-    }
-
-    @Override
-    public void onInitiated(String response) {
-        Toast.makeText(this, "Please wait for the OTP", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onInitiationFailed(Exception paramException) {
-        Toast.makeText(this, "Couldn't send the OTP, please retry", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onVerified(String response) {
-        Toast.makeText(this, "Signing up!", Toast.LENGTH_SHORT).show();
-        storeUserDataAndSignUp();
-    }
-
-    @Override
-    public void onVerificationFailed(Exception paramException) {
-        Toast.makeText(this, "Please check the OTP", Toast.LENGTH_SHORT).show();
     }
 }

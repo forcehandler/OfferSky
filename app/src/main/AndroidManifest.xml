@@ -3,6 +3,7 @@
     package="com.offersky.nomad.hitchbeacon">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
@@ -17,6 +18,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         >
+        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
+     See README(https://goo.gl/l4GJaQ) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/logonew" />
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
 
         <activity
             android:name=".splash"
@@ -86,11 +97,9 @@
         </activity>
         <activity android:name=".IconTabsActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".walkthrough"
-            android:screenOrientation="portrait"/>
         <activity android:name=".IntroActivity"
-           android:theme="@style/IntroTheme"
-            android:screenOrientation="portrait">
+                  android:theme="@style/IntroTheme"
+                  android:screenOrientation="portrait">
 
         </activity>
     </application>
